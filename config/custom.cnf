@@ -1,0 +1,6 @@
+[mysqld]
+max_connections         = 25    # default: 100
+thread_cache_size       = 25    # default: 128
+key_buffer_size         = 32M   # default: 128M
+innodb_buffer_pool_size = 64M  # default: 256M
+performance_schema      = off

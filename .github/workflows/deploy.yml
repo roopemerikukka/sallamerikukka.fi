@@ -1,0 +1,45 @@
+name: 'Deploy'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      WORDPRESS_DB_USER: ${{ secrets.WORDPRESS_DB_USER }}
+      WORDPRESS_DB_PASSWORD: ${{ secrets.WORDPRESS_DB_PASSWORD }}
+      WORDPRESS_DB_NAME: ${{ secrets.WORDPRESS_DB_NAME }}
+      DOMAIN: sallamerikukka.fi
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Rsync
+        uses: burnett01/rsync-deployments@5.0
+        with:
+          switches: -avzr --delete --exclude=".git/"
+          remote_path: ~/sallamerikukka.fi/
+          remote_host: ${{ secrets.HOST }}
+          remote_port: ${{ secrets.PORT }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_key: ${{ secrets.KEY }}
+
+      - name: SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          envs: WORDPRESS_DB_USER,WORDPRESS_DB_PASSWORD,WORDPRESS_DB_NAME,DOMAIN
+          script: |
+            cd ~/sallamerikukka.fi/
+            touch .env
+            echo "WORDPRESS_DB_USER=$WORDPRESS_DB_USER" >> .env
+            echo "WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD" >> .env
+            echo "WORDPRESS_DB_NAME=$WORDPRESS_DB_NAME" >> .env
+            echo "DOMAIN=$DOMAIN" >> .env
+            docker compose up -d
