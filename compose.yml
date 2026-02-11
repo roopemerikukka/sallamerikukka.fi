@@ -1,6 +1,6 @@
 services:
   wordpress:
-    image: wordpress:php8.1-fpm-alpine
+    image: wordpress:php8.5-fpm-alpine
     mem_limit: 256m
     container_name: salla-wordpress
     restart: always
@@ -36,12 +36,12 @@ services:
       - ./config/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
 
   redis:
-    image: redis:7.2-alpine
+    image: redis:7.4-alpine
     container_name: salla-wordpress-redis
     restart: always
 
   nginx:
-    image: nginx:1.25
+    image: nginx:1.29
     container_name: salla-wordpress-nginx
     restart: always
     environment:
