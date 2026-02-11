@@ -1,6 +1,6 @@
 services:
   wordpress:
-    image: wordpress:php8.5-fpm-alpine
+    image: wordpress:php8.2-fpm-alpine
     mem_limit: 256m
     container_name: salla-wordpress
     restart: always
