@@ -41,7 +41,7 @@ services:
     restart: always
 
   nginx:
-    image: nginx:1.25
+    image: nginx:1.27
     container_name: salla-wordpress-nginx
     restart: always
     environment:
