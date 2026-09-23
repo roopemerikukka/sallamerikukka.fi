@@ -36,7 +36,7 @@ services:
       - ./config/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
 
   redis:
-    image: redis:8-alpine
+    image: redis:7.4-alpine
     container_name: salla-wordpress-redis
     restart: always
 
