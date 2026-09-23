@@ -37,9 +37,17 @@ jobs:
           envs: WORDPRESS_DB_USER,WORDPRESS_DB_PASSWORD,WORDPRESS_DB_NAME,DOMAIN
           script: |
             cd ~/sallamerikukka.fi/
-            touch .env
-            echo "WORDPRESS_DB_USER=$WORDPRESS_DB_USER" >> .env
-            echo "WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD" >> .env
-            echo "WORDPRESS_DB_NAME=$WORDPRESS_DB_NAME" >> .env
-            echo "DOMAIN=$DOMAIN" >> .env
-            docker compose up -d
+
+            # 1. Overwrite .env
+            cat <<EOF > .env
+            WORDPRESS_DB_USER=$WORDPRESS_DB_USER
+            WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD
+            WORDPRESS_DB_NAME=$WORDPRESS_DB_NAME
+            DOMAIN=$DOMAIN
+            EOF
+
+            # 2. Pull any updated image tags from Docker Hub
+            docker compose pull
+
+            # 3. Force-recreate containers so Nginx re-resolves internal IPs
+            docker compose up -d --force-recreate --remove-orphans
